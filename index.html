@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jenny Mod — Minecraft</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow-x: hidden;
+
+      background:
+        linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.65)),
+        url("assets/background.jpg") center/cover fixed;
+    }
+
+    .overlay {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: clamp(42px, 8vw, 90px);
+      font-weight: 900;
+      letter-spacing: 4px;
+      text-shadow:
+        5px 5px 0 #222,
+        0 0 25px rgba(0,0,0,.8);
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: #ddd;
+      font-size: 18px;
+      margin-bottom: 35px;
+      text-shadow: 2px 2px #000;
+    }
+
+    .card {
+      width: min(850px, 95%);
+      padding: 35px;
+      background: rgba(15,15,15,.78);
+      border: 3px solid #555;
+      box-shadow:
+        0 0 0 3px #222,
+        0 15px 45px rgba(0,0,0,.7);
+      backdrop-filter: blur(5px);
+    }
+
+    .character {
+      width: 190px;
+      height: 250px;
+      object-fit: cover;
+      image-rendering: pixelated;
+      border: 4px solid #777;
+      box-shadow: 7px 7px 0 #222;
+      margin-bottom: 25px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      font-size: 30px;
+      text-shadow: 3px 3px #000;
+    }
+
+    .description {
+      color: #ccc;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    button {
+      border: 3px solid #111;
+      background: #555;
+      color: white;
+      padding: 15px 28px;
+      min-width: 170px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: inset 0 3px rgba(255,255,255,.15),
+                  4px 4px 0 #222;
+      transition: .12s;
+    }
+
+    button:hover {
+      background: #6f6f6f;
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translate(3px, 3px);
+      box-shadow: 1px 1px 0 #222;
+    }
+
+    .green {
+      background: #3c8527;
+    }
+
+    .green:hover {
+      background: #4ca832;
+    }
+
+    .sound {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      min-width: auto;
+      width: 58px;
+      height: 58px;
+      padding: 0;
+      font-size: 25px;
+      border-radius: 4px;
+    }
+
+    .status {
+      margin-top: 25px;
+      color: #8cff72;
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: #aaa;
+      font-size: 13px;
+      text-shadow: 2px 2px #000;
+    }
+
+    @media (max-width: 600px) {
+      .card {
+        padding: 25px 18px;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Música ambiente -->
+  <audio id="music" loop>
+    <source src="assets/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Efeito dos botões -->
+  <audio id="clickSound">
+    <source src="assets/click.mp3" type="audio/mpeg">
+  </audio>
+
+  <main class="overlay">
+
+    <h1 class="logo">JENNY MOD</h1>
+    <p class="subtitle">Uma experiência inspirada no universo Minecraft</p>
+
+    <section class="card">
+
+      <!-- Troque character.png pela sua imagem -->
+      <img
+        class="character"
+        src="assets/character.png"
+        alt="Personagem"
+      >
+
+      <h2>Bem-vindo ao mundo</h2>
+
+      <p class="description">
+        Explore uma interface temática inspirada no Minecraft,
+        com personagens, sons, animações e uma atmosfera pixelada.
+      </p>
+
+      <div class="buttons">
+        <button class="green" onclick="playAction()">
+          ▶ ENTRAR
+        </button>
+
+        <button onclick="playAction()">
+          ★ PERSONAGEM
+        </button>
+
+        <button onclick="playAction()">
+          ⚙ CONFIGURAÇÕES
+        </button>
+      </div>
+
+      <p id="status" class="status">
+        Sistema pronto.
+      </p>
+
+    </section>
+
+    <footer>
+      Minecraft-inspired interface • Fan project
+    </footer>
+
+  </main>
+
+  <!-- Controle de áudio -->
+  <button
+    class="sound"
+    id="soundButton"
+    onclick="toggleSound()"
+    title="Ativar/desativar som"
+  >
+    🔊
+  </button>
+
+  <script>
+    const music = document.getElementById("music");
+    const clickSound = document.getElementById("clickSound");
+    const soundButton = document.getElementById("soundButton");
+    const status = document.getElementById("status");
+
+    let soundEnabled = false;
+
+    music.volume = 0.35;
+    clickSound.volume = 0.5;
+
+    function startMusic() {
+      if (!soundEnabled) return;
+
+      music.play().catch(() => {
+        console.log("O navegador bloqueou o áudio automático.");
+      });
+    }
+
+    function playAction() {
+      if (soundEnabled) {
+        clickSound.currentTime = 0;
+        clickSound.play().catch(() => {});
+      }
+
+      status.textContent = "Ação selecionada!";
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+
+      if (soundEnabled) {
+        music.play().catch(() => {});
+        soundButton.textContent = "🔊";
+        status.textContent = "Som ativado.";
+      } else {
+        music.pause();
+        soundButton.textContent = "🔇";
+        status.textContent = "Som desativado.";
+      }
+    }
+
+    // Alguns navegadores exigem uma interação antes de reproduzir áudio.
+    document.addEventListener("click", () => {
+      if (soundEnabled && music.paused) {
+        startMusic();
+      }
+    }, { once: true });
+  </script>
+
+</body>
+</html>
