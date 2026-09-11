@@ -1,0 +1,19 @@
+# Assets (adicione seus próprios arquivos)
+assets/background.jpg
+assets/character.png
+assets/music.mp3
+assets/click.mp3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
